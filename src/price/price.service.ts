@@ -1,8 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
-import chalk from 'chalk';
 import { firstValueFrom } from 'rxjs';
 
 interface CoinGeckoResponse {

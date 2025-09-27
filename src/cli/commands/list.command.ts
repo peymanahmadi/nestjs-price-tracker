@@ -36,6 +36,6 @@ export class ListCommand extends CommandRunner {
     description: 'Filter symbols by type (forex, crypto, metals)',
   })
   parseType(val: string): string {
-    return val;
+    return val.toLowerCase();
   }
 }
