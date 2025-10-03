@@ -5,6 +5,7 @@ import { HttpModule } from '@nestjs/axios';
 import { CryptoModule } from './crypto/crypto.module';
 import { ForexModule } from './forex/forex.module';
 import { MetalsModule } from './metals/metals.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MetalsModule } from './metals/metals.module';
     CryptoModule,
     ForexModule,
     MetalsModule,
+    LoggerModule,
   ],
 })
 export class AppModule {}
