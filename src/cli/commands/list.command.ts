@@ -1,13 +1,24 @@
 import { Command, CommandRunner, Option } from 'nest-commander';
 import chalk from 'chalk';
-import { PriceService } from 'src/price/price.service';
 import { BadRequestException } from '@nestjs/common';
+import { CryptoService } from 'src/crypto/crypto.service';
+import { ForexService } from 'src/forex/forex.service';
+import { MetalsService } from 'src/metals/metals.service';
 
 @Command({ name: 'list', description: 'List all available symbols' })
 export class ListCommand extends CommandRunner {
   private readonly validTypes = ['forex', 'crypto', 'metals', 'all'];
+  private readonly symbols = {
+    crypto: ['bitcoin', 'ethereum'],
+    forex: ['eur/usd', 'gbp/usd'],
+    metals: ['gold', 'silver'],
+  };
 
-  constructor(private priceService: PriceService) {
+  constructor(
+    private cryptoService: CryptoService,
+    private forexService: ForexService,
+    private readonly metalsService: MetalsService,
+  ) {
     super();
   }
 
@@ -24,8 +35,30 @@ export class ListCommand extends CommandRunner {
 
     console.log(chalk.blue(`Listing symbols for type: ${type}`));
     try {
-      const btcPrice = await this.priceService.getCryptoPrice('bitcoin');
-      console.log(chalk.blue(`BTC/USD: $${btcPrice}`));
+      if (type === 'crypto' || type === 'all') {
+        for (const symbol of this.symbols.crypto) {
+          const price = await this.cryptoService.getCryptoPrice(symbol);
+          console.log(chalk.blue(`${symbol.toUpperCase()}/USD: $${price}`));
+        }
+      }
+
+      if (type === 'forex' || type === 'all') {
+        for (const symbol of this.symbols.forex) {
+          const price = await this.forexService.getForexPrice(symbol);
+          console.log(chalk.green(`${symbol.toUpperCase()}: $${price}`));
+        }
+      }
+
+      if (type === 'metals' || type === 'all') {
+        for (const symbol of this.symbols.metals) {
+          const price = await this.metalsService.getMetalsPrice(symbol);
+          console.log(
+            symbol === 'gold'
+              ? chalk.yellow(`${symbol.toUpperCase()}/USD: $${price}`)
+              : chalk.gray(`${symbol.toUpperCase()}/USD: $${price}`),
+          );
+        }
+      }
     } catch (error) {
       console.error(chalk.red(`Error: ${error.message}`));
     }
