@@ -11,7 +11,7 @@ export class ListCommand extends CommandRunner {
   private readonly symbols = {
     crypto: ['bitcoin', 'ethereum'],
     forex: ['eur/usd', 'gbp/usd'],
-    metals: ['gold', 'silver'],
+    metals: ['XAU', 'XAG'],
   };
 
   constructor(
@@ -53,9 +53,9 @@ export class ListCommand extends CommandRunner {
         for (const symbol of this.symbols.metals) {
           const price = await this.metalsService.getMetalsPrice(symbol);
           console.log(
-            symbol === 'gold'
-              ? chalk.yellow(`${symbol.toUpperCase()}/USD: $${price}`)
-              : chalk.gray(`${symbol.toUpperCase()}/USD: $${price}`),
+            symbol === 'XAU'
+              ? chalk.yellow(`GOLD: $${price}`)
+              : chalk.gray(`SILVER: $${price}`),
           );
         }
       }

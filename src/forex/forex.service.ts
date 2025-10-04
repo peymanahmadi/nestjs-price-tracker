@@ -1,7 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { firstValueFrom } from 'rxjs';
+import { Logger } from 'winston';
 
 @Injectable()
 export class ForexService {
@@ -11,6 +13,7 @@ export class ForexService {
   constructor(
     private configService: ConfigService,
     private httpService: HttpService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {
     const apiKey = this.configService.get<string>('ALPHA_VANTAGE_API_KEY');
     if (!apiKey) {
@@ -20,6 +23,7 @@ export class ForexService {
   }
 
   async getForexPrice(symbol: string): Promise<number> {
+    this.logger.info(`Fetching price for: ${symbol}`);
     try {
       const [fromCurrency, toCurrency] = symbol
         .split('/')
@@ -41,8 +45,11 @@ export class ForexService {
         throw new Error('No exchange rate data in response');
       }
 
-      return parseFloat(exchangeData['5. Exchange Rate']);
+      const price = parseFloat(exchangeData['5. Exchange Rate']);
+      this.logger.info(`Fetched price for ${symbol}: $${price}`);
+      return price;
     } catch (error) {
+      this.logger.error(`Error fetching ${symbol} price: ${error.message}`);
       throw new NotFoundException(
         `Error fetching ${symbol} price: ${error.message}`,
       );
