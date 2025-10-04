@@ -14,7 +14,6 @@ export class CryptoService {
   private readonly apiUrl = 'https://api.coingecko.com/api/v3/simple/price';
 
   constructor(
-    private configService: ConfigService,
     private httpService: HttpService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}

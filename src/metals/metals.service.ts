@@ -26,11 +26,15 @@ export class MetalsService {
       );
 
       const exchangeData = response.data;
-      if (!exchangeData) {
-        throw new Error('No exchange rate data in response');
+      if (!exchangeData || !exchangeData.price) {
+        throw new Error('Price data missing or empty in API response');
       }
 
       const price = parseFloat(exchangeData['price']);
+      if (isNaN(price)) {
+        throw new Error('Invalid price format received');
+      }
+      
       this.logger.info(`Fetched price for ${symbol}: $${price}`);
       return price;
     } catch (error) {
