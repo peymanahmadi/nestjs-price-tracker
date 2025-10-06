@@ -61,4 +61,13 @@ describe('CryptoService', () => {
       'Price not found for symbol: invalid',
     );
   });
+
+  it('should throw NotFoundException for network error', async () => {
+    jest.spyOn(httpService, 'get').mockImplementationOnce(() => {
+      throw new Error('Network error');
+    });
+    await expect(service.getCryptoPrice('bitcoin')).rejects.toThrow(
+      'Error fetching bitcoin price: Network error',
+    );
+  });
 });

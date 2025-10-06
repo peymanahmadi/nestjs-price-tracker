@@ -60,4 +60,13 @@ describe('MetalsService', () => {
       'Error fetching invalid price: Price data missing or empty in API response',
     );
   });
+
+  it('should throw NotFoundException for network error', async () => {
+    jest.spyOn(httpService, 'get').mockImplementationOnce(() => {
+      throw new Error('Network error');
+    });
+    await expect(service.getMetalsPrice('XAU')).rejects.toThrow(
+      'Error fetching XAU price: Network error',
+    );
+  });
 });

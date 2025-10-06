@@ -66,4 +66,13 @@ describe('ForexService', () => {
       },
     );
   });
+
+  it('should throw NotFoundException for network error', async () => {
+    jest.spyOn(httpService, 'get').mockImplementationOnce(() => {
+      throw new Error('Network error');
+    });
+    await expect(service.getForexPrice('eur/usd')).rejects.toThrow(
+      'Error fetching eur/usd price: Network error',
+    );
+  });
 });
