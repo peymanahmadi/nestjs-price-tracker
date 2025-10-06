@@ -19,27 +19,36 @@ export class CryptoService {
   ) {}
 
   async getCryptoPrice(symbol: string): Promise<number> {
-    this.logger.info(`Fetching price for cryptocurrency: ${symbol}`);
+    return (await this.getCryptoPrices([symbol]))[symbol];
+  }
+  
+  async getCryptoPrices(symbols: string[]): Promise<Record<string, number>> {
+    this.logger.info(
+      `Fetching prices for cryptocurrencies: ${symbols.join(', ')}`,
+    );
     try {
       const response = await firstValueFrom(
         this.httpService.get<CoinGeckoResponse>(this.apiUrl, {
           params: {
-            ids: symbol.toLowerCase(),
+            ids: symbols.map((s) => s.toLowerCase()).join(','),
             vs_currencies: 'usd',
           },
         }),
       );
-      const price = response.data[symbol.toLowerCase()]?.usd;
-      if (!price) {
-        throw new NotFoundException(`Price not found for symbol: ${symbol}`);
+      const prices = response.data;
+      const result: Record<string, number> = {};
+      for (const symbol of symbols) {
+        const price = prices[symbol.toLowerCase()]?.usd;
+        if (!price) {
+          throw new NotFoundException(`Price not found for symbol: ${symbol}`);
+        }
+        result[symbol] = price;
+        this.logger.info(`Fetched price for ${symbol}: $${price}`);
       }
-      this.logger.info(`Fetched price for ${symbol}: $${price}`);
-      return price;
+      return result;
     } catch (error) {
-      this.logger.error(`Error fetching ${symbol} price: ${error.message}`);
-      throw new NotFoundException(
-        `Error fetching ${symbol} price: ${error.message}`,
-      );
+      this.logger.error(`Error fetching prices: ${error.message}`);
+      throw new NotFoundException(`Error fetching prices: ${error.message}`);
     }
   }
 }

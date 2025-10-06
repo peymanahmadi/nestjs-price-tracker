@@ -36,9 +36,13 @@ export class ListCommand extends CommandRunner {
     console.log(chalk.blue(`Listing symbols for type: ${type}`));
     try {
       if (type === 'crypto' || type === 'all') {
+        const prices = await this.cryptoService.getCryptoPrices(
+          this.symbols.crypto,
+        );
         for (const symbol of this.symbols.crypto) {
-          const price = await this.cryptoService.getCryptoPrice(symbol);
-          console.log(chalk.blue(`${symbol.toUpperCase()}/USD: $${price}`));
+          console.log(
+            chalk.blue(`${symbol.toUpperCase()}/USD: $${prices[symbol]}`),
+          );
         }
       }
 
