@@ -30,7 +30,7 @@ describe('CryptoService', () => {
   it('should fetch bitcoin price', async () => {
     jest.spyOn(httpService, 'get').mockReturnValueOnce(
       of({
-        data: { bitcoin: { usd: 50000 } },
+        data: { bitcoin: { usd: 50000 }, ethereum: { usd: 3000 } },
         status: 200,
         statusText: 'OK',
         headers: {}, // Response headers
@@ -38,11 +38,11 @@ describe('CryptoService', () => {
       } as AxiosResponse<any>), // <-- Apply a Type Assertion here
     );
 
-    const price = await service.getCryptoPrice('bitcoin');
-    expect(price).toBe(50000);
+    const price = await service.getCryptoPrices(['bitcoin', 'ethereum']);
+    expect(price).toEqual({ bitcoin: 50000, ethereum: 3000 });
     expect(httpService.get).toHaveBeenCalledWith(
       'https://api.coingecko.com/api/v3/simple/price',
-      { params: { ids: 'bitcoin', vs_currencies: 'usd' } },
+      { params: { ids: 'bitcoin,ethereum', vs_currencies: 'usd' } },
     );
   });
 
@@ -67,7 +67,7 @@ describe('CryptoService', () => {
       throw new Error('Network error');
     });
     await expect(service.getCryptoPrice('bitcoin')).rejects.toThrow(
-      'Error fetching bitcoin price: Network error',
+      'Error fetching prices: Network error',
     );
   });
 });
