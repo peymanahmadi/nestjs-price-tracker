@@ -5,12 +5,14 @@ import { CryptoService } from 'src/crypto/crypto.service';
 import { ForexService } from 'src/forex/forex.service';
 import { MetalsService } from 'src/metals/metals.service';
 import { PriceCommand } from './commands/price.command';
+import { WatchCommand } from './commands/watch.command';
 
 @Module({
   imports: [HttpModule],
   providers: [
     ListCommand,
     PriceCommand,
+    WatchCommand,
     CryptoService,
     ForexService,
     MetalsService,
