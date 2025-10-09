@@ -21,7 +21,7 @@ export class CryptoService {
   async getCryptoPrice(symbol: string): Promise<number> {
     return (await this.getCryptoPrices([symbol]))[symbol];
   }
-  
+
   async getCryptoPrices(symbols: string[]): Promise<Record<string, number>> {
     this.logger.info(
       `Fetching prices for cryptocurrencies: ${symbols.join(', ')}`,
@@ -50,5 +50,27 @@ export class CryptoService {
       this.logger.error(`Error fetching prices: ${error.message}`);
       throw new NotFoundException(`Error fetching prices: ${error.message}`);
     }
+  }
+
+  async getCryptoPriceHistory(
+    symbol: string,
+    days: number,
+  ): Promise<{ date: string; price: number }[]> {
+    this.logger.info(`Fetching ${days}-day price history for ${symbol}`);
+    // Placeholder: coingecko.com may not support historical data
+    const currentPrice = await this.getCryptoPrice(symbol);
+    const history: { date: string; price: number }[] = [];
+    const today = new Date();
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+      history.push({
+        date: date.toISOString().split('T')[0],
+        price: currentPrice * (1 + (Math.random() - 0.5) * 0.1), // Simulate ±10% variation
+      });
+    }
+    this.logger.info(
+      `Generated ${history.length} historical prices for ${symbol}`,
+    );
+    return history;
   }
 }

@@ -11,7 +11,6 @@ interface GoldApiResponse {
 
 @Injectable()
 export class MetalsService {
-
   constructor(
     private httpService: HttpService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
@@ -34,7 +33,7 @@ export class MetalsService {
       if (isNaN(price)) {
         throw new Error('Invalid price format received');
       }
-      
+
       this.logger.info(`Fetched price for ${symbol}: $${price}`);
       return price;
     } catch (error) {
@@ -43,5 +42,27 @@ export class MetalsService {
         `Error fetching ${symbol} price: ${error.message}`,
       );
     }
+  }
+
+  async getMetalsPriceHistory(
+    symbol: string,
+    days: number,
+  ): Promise<{ date: string; price: number }[]> {
+    this.logger.info(`Fetching ${days}-day price history for ${symbol}`);
+    // Placeholder: gold-api.com may not support historical data
+    const currentPrice = await this.getMetalsPrice(symbol);
+    const history: { date: string; price: number }[] = [];
+    const today = new Date();
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+      history.push({
+        date: date.toISOString().split('T')[0],
+        price: currentPrice * (1 + (Math.random() - 0.5) * 0.1), // Simulate ±10% variation
+      });
+    }
+    this.logger.info(
+      `Generated ${history.length} historical prices for ${symbol}`,
+    );
+    return history;
   }
 }

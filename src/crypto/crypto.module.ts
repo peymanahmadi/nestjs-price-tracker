@@ -4,6 +4,6 @@ import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [HttpModule],
-  providers: [CryptoService]
+  providers: [CryptoService],
 })
 export class CryptoModule {}

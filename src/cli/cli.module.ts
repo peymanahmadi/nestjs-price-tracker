@@ -6,6 +6,7 @@ import { ForexService } from 'src/forex/forex.service';
 import { MetalsService } from 'src/metals/metals.service';
 import { PriceCommand } from './commands/price.command';
 import { WatchCommand } from './commands/watch.command';
+import { HistoryCommand } from './commands/history.command';
 
 @Module({
   imports: [HttpModule],
@@ -13,6 +14,7 @@ import { WatchCommand } from './commands/watch.command';
     ListCommand,
     PriceCommand,
     WatchCommand,
+    HistoryCommand,
     CryptoService,
     ForexService,
     MetalsService,

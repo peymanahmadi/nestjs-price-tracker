@@ -4,6 +4,6 @@ import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [HttpModule],
-  providers: [ForexService]
+  providers: [ForexService],
 })
 export class ForexModule {}
