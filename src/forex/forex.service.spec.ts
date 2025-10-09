@@ -75,4 +75,37 @@ describe('ForexService', () => {
       'Error fetching eur/usd price: Network error',
     );
   });
+
+  it('should fetch EUR/USD price history', async () => {
+    jest.spyOn(httpService, 'get').mockReturnValueOnce(
+      of({
+        data: {
+          'Time Series FX (Daily)': {
+            '2023-10-01': { '4. close': '1.1744' },
+            '2023-10-02': { '4. close': '1.1750' },
+          },
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      } as AxiosResponse<any>),
+    );
+    const history = await service.getForexPriceHistory('eur/usd', 2);
+    expect(history).toEqual([
+      { date: '2023-10-01', price: 1.1744 },
+      { date: '2023-10-02', price: 1.175 },
+    ]);
+    expect(httpService.get).toHaveBeenCalledWith(
+      'https://www.alphavantage.co/query',
+      {
+        params: {
+          function: 'FX_DAILY',
+          from_symbol: 'EUR',
+          to_symbol: 'USD',
+          apikey: 'TEST_KEY',
+        },
+      },
+    );
+  });
 });

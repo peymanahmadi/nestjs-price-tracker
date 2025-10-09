@@ -56,6 +56,11 @@ export class HistoryCommand extends CommandRunner {
       let history: HistoriclPrice[];
       switch (type) {
         case 'crypto':
+          console.log(
+            chalk.yellow(
+              'Warning: Historical data for crypto is not provided by the API. Using placeholder data.',
+            ),
+          );
           history = await this.cryptoService.getCryptoPriceHistory(
             symbol,
             days,
@@ -65,6 +70,11 @@ export class HistoryCommand extends CommandRunner {
           history = await this.forexService.getForexPriceHistory(symbol, days);
           break;
         case 'metals':
+          console.log(
+            chalk.yellow(
+              'Warning: Historical data for metals is not provided by the API. Using placeholder data.',
+            ),
+          );
           history = await this.metalsService.getMetalsPriceHistory(
             symbol,
             days,

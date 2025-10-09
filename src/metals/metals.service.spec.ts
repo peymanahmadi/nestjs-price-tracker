@@ -69,4 +69,20 @@ describe('MetalsService', () => {
       'Error fetching XAU price: Network error',
     );
   });
+
+  it('should generate XAU price history (placeholder)', async () => {
+    jest.spyOn(httpService, 'get').mockReturnValueOnce(
+      of({
+        data: { price: '3887' },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      } as AxiosResponse<any>),
+    );
+    const history = await service.getMetalsPriceHistory('XAU', 2);
+    expect(history.length).toBe(2);
+    expect(history[0].date).toMatch(/\d{4}-\d{2}-\d{2}/);
+    expect(typeof history[0].price).toBe('number');
+  });
 });

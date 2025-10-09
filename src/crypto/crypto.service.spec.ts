@@ -46,6 +46,26 @@ describe('CryptoService', () => {
     );
   });
 
+  it('should generate bitcoin price history (placeholder)', async () => {
+    jest.spyOn(httpService, 'get').mockReturnValueOnce(
+      of({
+        data: { bitcoin: { usd: 50000 } },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      } as AxiosResponse<any>),
+    );
+    const history = await service.getCryptoPriceHistory('bitcoin', 2);
+    expect(history.length).toBe(2);
+    expect(history[0].date).toMatch(/\d{4}-\d{2}-\d{2}/);
+    expect(typeof history[0].price).toBe('number');
+    expect(httpService.get).toHaveBeenCalledWith(
+      'https://api.coingecko.com/api/v3/simple/price',
+      { params: { ids: 'bitcoin', vs_currencies: 'usd' } },
+    );
+  });
+
   it('should throw NotFoundException for invalid symbol', async () => {
     jest.spyOn(httpService, 'get').mockReturnValueOnce(
       of({

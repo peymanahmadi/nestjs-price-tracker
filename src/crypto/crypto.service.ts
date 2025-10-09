@@ -57,7 +57,7 @@ export class CryptoService {
     days: number,
   ): Promise<{ date: string; price: number }[]> {
     this.logger.info(`Fetching ${days}-day price history for ${symbol}`);
-    // Placeholder: coingecko.com may not support historical data
+    // Placeholder: CoinGecko historical data not available
     const currentPrice = await this.getCryptoPrice(symbol);
     const history: { date: string; price: number }[] = [];
     const today = new Date();

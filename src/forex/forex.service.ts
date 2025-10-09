@@ -80,7 +80,7 @@ export class ForexService {
             function: 'FX_DAILY',
             from_symbol: fromCurrency,
             to_symbol: toCurrency,
-            apikey: 'demo',
+            apikey: this.apiKey,
           },
         }),
       );
